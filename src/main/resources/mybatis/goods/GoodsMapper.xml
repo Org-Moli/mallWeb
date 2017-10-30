@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="GoodsMapper">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		shop_goods
+	</sql>
+	
+	<sql id="categorytableName">
+		shop_category
+	</sql>
+	
+	<sql id="roleTableName">
+        SYS_ROLE
+    </sql>
+    
+	<sql id="userTableName">
+        SYS_USER
+    </sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		goods_pic,	
+		goods_name,	
+		goods_title,	
+		goods_price,	
+		goods_detail,	
+		category_id,	
+		goods_id,
+		sort,
+		tuijian,
+		reason_return,
+		goods_sales,
+		goods_num,
+		user_id
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{goods_pic},	
+		#{goods_name},	
+		#{goods_title},	
+		#{goods_price},	
+		#{goods_detail},	
+		#{category_id},	
+		#{goods_id},
+		#{sort},
+		#{tuijian},
+		#{reason_return},
+		#{goods_sales},
+		#{goods_num},
+		#{user_id}
+
+	</sql>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			goods_id = #{goods_id}
+	</delete>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			goods_pic = #{goods_pic},
+			goods_name = #{goods_name},
+			goods_title = #{goods_title},
+			goods_price = #{goods_price},
+			goods_detail = #{goods_detail},
+			category_id = #{category_id},
+			sort = #{sort},
+			tuijian = #{tuijian},
+			reason_return = #{reason_return},
+			goods_sales= #{goods_sales},
+			goods_num =#{goods_num}
+		where 
+		goods_id = #{goods_id}
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+		t1.goods_id,
+		t1.goods_pic,	
+		t1.goods_name,	
+		t1.goods_title,	
+		t1.goods_price,	
+		t1.goods_detail,	
+		t1.category_id,
+		t2.category_name,
+		t1.sort,
+		tuijian,
+		reason_return,
+		goods_num,
+		goods_sales
+		from
+		shop_goods t1 left join  shop_category t2
+		on t1.category_id=t2.category_id
+		where 
+		goods_id = #{goods_id}
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd"> 
+		
+		select 
+		t1.goods_pic,	
+		t1.goods_name,	
+		t1.goods_title,	
+		t1.goods_price,	
+		t1.goods_detail,	
+		t1.category_id,	
+		t1.goods_id,
+		t2.category_name
+		from 
+		<include refid="tableName"></include> t1 left join
+		 
+		<include refid="categorytableName"></include> t2
+		on t1.category_id = t2.category_id  left join
+		<include refid="userTableName"></include> t3
+		on t3.user_id = t1.user_id  left join
+		<include refid="roleTableName"></include> t4
+		on t4.role_id = t3.role_id
+		where 1=1
+		<if test="pd.category_id!= null and pd.category_id!= ''">
+			and t1.category_id = #{pd.category_id}
+		</if>
+		<if test="pd.category_id== null or pd.category_id== ''">
+		<if test="pd.super_id!= null and pd.super_id!= '0'.toString() and pd.super_id!=''">
+		and t1.category_id in (select category_id from shop_category where super_id =#{pd.super_id})
+		</if>
+		</if>
+		<if test="pd.goods_name!= null and pd.goods_name!= ''">
+			and
+			goods_name like concat('%', #{pd.goods_name},'%')	
+		</if>
+		<if test="pd.role_id!= null and pd.role_id!= ''">
+            and
+            t3.role_id =#{pd.role_id}   
+        </if>
+		order by t1.category_id
+	</select>
+	
+	
+	<!--根据用户查询 列表 -->
+	<select id="dataUserlistPage" parameterType="page" resultType="pd"> 
+		
+		select 
+		t1.goods_pic,	
+		t1.goods_name,	
+		t1.goods_title,	
+		t1.goods_price,	
+		t1.goods_detail,	
+		t1.category_id,	
+		t1.goods_id,
+		t2.category_name
+		from 
+		<include refid="tableName"></include> t1 left join
+		 
+		<include refid="categorytableName"></include> t2
+		on t1.category_id = t2.category_id 
+		where t1.user_id = #{pd.user_id}
+		<if test="pd.category_id!= null and pd.category_id!= ''">
+			and t1.category_id = #{pd.category_id}
+		</if>
+		<if test="pd.category_id== null or pd.category_id== ''">
+		<if test="pd.super_id!= null and pd.super_id!= '0'.toString() and pd.super_id!=''">
+		and t1.category_id in (select category_id from shop_category where super_id =#{pd.super_id})
+		</if>
+		</if>
+		<if test="pd.goods_name!= null and pd.goods_name!= ''">
+			and
+			goods_name like concat('%', #{pd.goods_name},'%')	
+		</if>
+		order by t1.category_id
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 1=1
+		<if test="category_id!= null and category_id!= ''">
+		and category_id = #{category_id}
+		</if>
+		order by sort
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			goods_id in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+	
+</mapper>
