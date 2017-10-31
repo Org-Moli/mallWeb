@@ -30,8 +30,8 @@ function upload() {
 			if(rs.success)
 			{
                 $('#img').html(
-                    "<img src='" + data.url + "' width='100' height='100'>");
-                $("#filepath").val(data.url);
+                    "<img src='" + rs.url + "' width='100' height='100'>");
+                $("#filepath").val(rs.url);
 			}
 			 else {
 				alert('失败');
