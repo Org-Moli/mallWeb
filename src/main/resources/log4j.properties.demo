@@ -18,6 +18,6 @@ log4j.appender.file.Threshold = DEBUG
 log4j.appender.file.ImmediateFlush = TRUE
 #:默认值true,将消息追加到指定文件中，false指将消息覆盖指定的文件内容
 log4j.appender.file.Append = TRUE
-log4j.appender.file.File =  /Users/jzb/Desktop/logs/mallweb/mall-common.log
+log4j.appender.file.File =  /opt/imory/logs/webapp/mallweb/mallweb-common.log
 log4j.appender.file.DatePattern = '.'yyyy-MM-dd-HH'.log'
 log4j.appender.file.Encoding = UTF-8

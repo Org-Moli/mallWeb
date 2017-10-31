@@ -68,6 +68,7 @@ public class FileController {
         }
         jsonObject.put("result", 1);
         jsonObject.put("fileName", fileName);
+        targetFile.delete();//删除文件
         return jsonObject.toString();
     }
 
