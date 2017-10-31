@@ -24,16 +24,16 @@ function upload() {
 		url : "upload", // 需要链接到服务器地址
 		secureuri : false,
 		fileElementId : "file", // 文件选择框的id属性
-		dataType : 'text', // 服务器返回的格式，可以是json
+		dataType : 'json', // 服务器返回的格式，可以是json
 		success : function(rs) // 相当于java中try语句块的用法
 		{
-			var data = eval('(' + rs + ')');
-			if (data.result == 1) {
-				// $('#img').html("");
-				$('#img').html(
-						"<img src='" + data.url + "' width='100' height='100'>");
-				$("#filepath").val(data.url);
-			} else {
+			if(rs.success)
+			{
+                $('#img').html(
+                    "<img src='" + data.url + "' width='100' height='100'>");
+                $("#filepath").val(data.url);
+			}
+			 else {
 				alert('失败');
 				// document.getElementById("msg"+m[1]).value="失败";
 			}
@@ -41,7 +41,6 @@ function upload() {
 		error : function(data, status, e) // 相当于java中catch语句块的用法
 		{
 			alert('异常');
-
 		}
 	});
 }

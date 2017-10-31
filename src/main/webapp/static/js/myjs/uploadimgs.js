@@ -25,26 +25,27 @@ function upload() {
 		url : 'upload', // 需要链接到服务器地址
 		secureuri : false,
 		fileElementId : "file", // 文件选择框的id属性
-		dataType : 'text', // 服务器返回的格式，可以是json
+		dataType : 'json', // 服务器返回的格式，可以是json
 		success : function(rs) // 相当于java中try语句块的用法
 		{
-			var data = eval('(' + rs + ')');
-			if (data.result == 1) {
-				picsize = parseInt(picsize)+parseInt(1);
-				// $('#img').html("");
-				$('#img').append(
-						"<img src='" + data.url + "' width='70' hegiht='70' id = '"+picsize+"' onclick='delimg("+picsize+")'>")
-						.append("<input type='hidden' name='picvalue' id = 'v"+picsize+"' value='" + data.url + "'/>");
-				$("#picsize").val(picsize);
-				//$("#filepath").val(data.url);
-			} else {
-				alert('失败');
-				// document.getElementById("msg"+m[1]).value="失败";
+			if(rs.success)
+			{
+                // $('#img').html("");
+                $('#img').append(
+                    "<img src='" + rs.url + "' width='70' hegiht='70' id = '"+picsize+"' onclick='delimg("+picsize+")'>")
+                    .append("<input type='hidden' name='picvalue' id = 'v"+picsize+"' value='" + rs.url + "'/>");
+                $("#picsize").val(picsize);
+                //$("#filepath").val(data.url);
+			}
+			else {
+                alert('失败');
+                // document.getElementById("msg"+m[1]).value="失败";
 			}
 		},
 		error : function(data, status, e) // 相当于java中catch语句块的用法
 		{
-			alert('异常');
+			alert('异常:' + e);
+			console.log(e);
 
 		}
 	});
